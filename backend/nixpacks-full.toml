@@ -1,0 +1,25 @@
+# Backend Nixpacks Configuration
+
+[phases.setup]
+nixPkgs = ["nodejs-20_x", "postgresql", "cairo", "pango", "giflib", "libjpeg-turbo"]
+aptPkgs = ["build-essential", "python3"]
+
+[phases.install]
+cmds = [
+  "npm config set maxsockets 5",
+  "npm config set fetch-retries 3",
+  "npm config set fetch-retry-mintimeout 20000",
+  "npm ci --no-audit --no-fund"
+]
+
+[phases.build]
+cmds = [
+  "npx prisma generate",
+  "npm run build"
+]
+
+[start]
+cmd = "npx prisma migrate deploy && node dist/server.js"
+
+[variables]
+NODE_OPTIONS = "--max-old-space-size=1024"
