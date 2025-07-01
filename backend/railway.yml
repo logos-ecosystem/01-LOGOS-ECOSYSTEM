@@ -1,0 +1,11 @@
+# Railway.app Configuration
+services:
+  - name: backend
+    env: node
+    buildCommand: npm ci --no-audit --no-fund && npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && npm start
+    healthcheckPath: /health
+    restartPolicyType: on-failure
+    envVars:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=1024

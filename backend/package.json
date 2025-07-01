@@ -9,6 +9,7 @@
     "build": "tsc -p tsconfig.minimal.json && echo 'Build completed with minimal config'",
     "build:debug": "node build-debug.js",
     "start": "node dist/server.js",
+    "start:prod": "NODE_ENV=production node dist/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
