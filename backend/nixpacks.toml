@@ -1,0 +1,16 @@
+# Backend Nixpacks Configuration
+
+[phases.setup]
+nixPkgs = ["nodejs-18_x", "postgresql"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = [
+  "npm run build",
+  "npx prisma generate"
+]
+
+[start]
+cmd = "npx prisma migrate deploy && npm start"
