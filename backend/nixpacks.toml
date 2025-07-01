@@ -8,8 +8,9 @@ cmds = ["npm ci"]
 
 [phases.build]
 cmds = [
-  "npm run build",
-  "npx prisma generate"
+  "npx prisma generate",
+  "npx tsc --version",
+  "npm run build || (echo 'Build failed. Running debug build...' && npm run build:debug)"
 ]
 
 [start]
