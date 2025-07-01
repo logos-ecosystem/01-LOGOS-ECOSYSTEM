@@ -1,6 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { format } from 'date-fns';
-import logger from '../utils/logger';
+import { logger } from '../utils/logger';
 import { i18nService } from './i18n.service';
 import path from 'path';
 import fs from 'fs/promises';

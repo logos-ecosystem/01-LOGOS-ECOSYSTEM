@@ -610,7 +610,9 @@ Provide:
       sentiment: 'neutral',
       keywords: text.split(' ').filter(w => w.length > 4),
       autoResolvable: false,
-      estimatedResolutionTime: 240
+      estimatedResolutionTime: 240,
+      relatedTickets: [],
+      knowledgeBaseArticles: []
     };
   }
 
@@ -734,7 +736,9 @@ Provide:
       data: {
         priority: 'urgent',
         tags: {
-          push: 'escalated'
+          create: {
+            name: 'escalated'
+          }
         }
       }
     });

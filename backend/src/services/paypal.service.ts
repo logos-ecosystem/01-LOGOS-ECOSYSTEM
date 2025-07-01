@@ -3,7 +3,7 @@ import { prisma } from '../config/database';
 import { logger } from '../utils/logger';
 import { emailService } from './email.service';
 import { invoiceService } from './invoice.service';
-import { auditLogService } from './auditLog.service';
+import { AuditLogService } from './auditLog.service';
 import crypto from 'crypto';
 
 interface PayPalConfig {

@@ -120,6 +120,10 @@ Format the documentation in Markdown.`;
     );
   }
 
+  async sendMessage(message: string): Promise<string> {
+    return this.generateResponse(message);
+  }
+
   async chatCompletion(
     messages: ChatMessage[],
     systemPrompt?: string,

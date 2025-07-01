@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { createAppAuth } from '@octokit/auth-app';
 import { verify } from '@octokit/webhooks-methods';
-import { claudeService } from './claude.service';
+import { ClaudeService } from './claude.service';
 import { logger } from '../utils/logger';
 
 interface GitHubWebhookPayload {

@@ -1,6 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { format } from 'date-fns';
-import logger from '../utils/logger';
+import { logger } from '../utils/logger';
 
 export class PDFService {
   async generateInvoicePDF(invoice: any): Promise<Buffer> {
