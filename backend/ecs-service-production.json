@@ -1,0 +1,25 @@
+{
+  "serviceName": "logos-backend-service",
+  "taskDefinition": "logos-backend-task:3",
+  "desiredCount": 2,
+  "launchType": "FARGATE",
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": ["subnet-04b51afc73d64cb80", "subnet-01fd27444c848f9b0"],
+      "securityGroups": ["sg-0d083608ddbb5dafa"],
+      "assignPublicIp": "DISABLED"
+    }
+  },
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:287103448174:targetgroup/logos-backend-tg-prod/e2662cb945ed3c52",
+      "containerName": "logos-backend",
+      "containerPort": 8000
+    }
+  ],
+  "healthCheckGracePeriodSeconds": 120,
+  "deploymentConfiguration": {
+    "maximumPercent": 200,
+    "minimumHealthyPercent": 100
+  }
+}

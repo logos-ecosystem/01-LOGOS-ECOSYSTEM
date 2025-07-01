@@ -1,0 +1,27 @@
+# Simple working Dockerfile
+FROM node:18-alpine
+
+RUN apk add --no-cache openssl curl
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies
+RUN npm ci --omit=dev
+
+# Copy simple server
+COPY src/simple-server.js ./
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+USER nodejs
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["node", "simple-server.js"]

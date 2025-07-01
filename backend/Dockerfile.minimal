@@ -1,0 +1,28 @@
+# Minimal production Dockerfile
+FROM node:18-alpine
+
+RUN apk add --no-cache openssl bash
+
+WORKDIR /app
+
+# Copy only essential files
+COPY package*.json ./
+COPY prisma ./prisma/
+COPY src ./src/
+COPY build.sh ./
+
+# Install production dependencies only
+RUN npm ci --omit=dev
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Build
+RUN chmod +x build.sh && ./build.sh
+
+# Remove unnecessary files
+RUN rm -rf src build.sh
+
+EXPOSE 8000
+
+CMD ["node", "dist/server.js"]

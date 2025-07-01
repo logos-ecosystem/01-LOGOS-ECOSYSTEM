@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGOS ECOSYSTEM - AI-Native Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0A0E21;
+            color: #FFFFFF;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Previous styles... */
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 14, 33, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(72, 112, 255, 0.2);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4870FF 0%, #00F6FF 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spin 10s linear infinite;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #FFFFFF;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #4870FF;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #4870FF 0%, #00F6FF 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(72, 112, 255, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(72, 112, 255, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(72, 112, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(0, 246, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00F6FF;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #4870FF 0%, #00F6FF 50%, #4870FF 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 5s ease infinite;
+        }
+
+        .hero-text p {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-orb {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at 30% 30%, #4870FF, #00F6FF);
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.8;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .ai-core {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #4870FF 0%, #00F6FF 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            box-shadow: 0 0 60px rgba(72, 112, 255, 0.6);
+            animation: float 4s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ai-core:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 80px rgba(72, 112, 255, 0.8);
+        }
+
+        /* Live Demo Section */
+        .live-demo {
+            padding: 4rem 0;
+            background: rgba(72, 112, 255, 0.02);
+            border-top: 1px solid rgba(72, 112, 255, 0.1);
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .chat-demo {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(72, 112, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(72, 112, 255, 0.2);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.ai {
+            text-align: left;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+
+        .message.ai .message-bubble {
+            background: rgba(72, 112, 255, 0.2);
+            border: 1px solid rgba(72, 112, 255, 0.3);
+        }
+
+        .message.user .message-bubble {
+            background: rgba(0, 246, 255, 0.2);
+            border: 1px solid rgba(0, 246, 255, 0.3);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(72, 112, 255, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: #FFFFFF;
+            font-size: 1rem;
+        }
+
+        .chat-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chat-input button {
+            background: linear-gradient(135deg, #4870FF 0%, #00F6FF 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chat-input button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Real-time Metrics */
+        .metrics-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(72, 112, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .metric-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4870FF 0%, #00F6FF 100%);
+            border-radius: 8px;
+            transition: width 1s ease;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 4rem 0;
+            background: rgba(72, 112, 255, 0.02);
+            border-bottom: 1px solid rgba(72, 112, 255, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(72, 112, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(72, 112, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(10%, 10%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(72, 112, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(72, 112, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #4870FF;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(72, 112, 255, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(72, 112, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(72, 112, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(72, 112, 255, 0.3);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(72, 112, 255, 0.2) 0%, rgba(0, 246, 255, 0.2) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+        }
+
+        /* AI Activity */
+        .ai-activity {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(10, 14, 33, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(72, 112, 255, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ai-activity:hover {
+            transform: scale(1.05);
+            border-color: rgba(72, 112, 255, 0.5);
+        }
+
+        .ai-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #4870FF;
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        /* Terminal Demo */
+        .terminal {
+            background: #000;
+            border: 1px solid rgba(72, 112, 255, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 2rem;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            color: #00F6FF;
+        }
+
+        .terminal-prompt {
+            color: #4870FF;
+        }
+
+        .typing {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typewriter 2s steps(40, end);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: rgba(72, 112, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.5);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 30px rgba(72, 112, 255, 0.5);
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-visual {
+                height: 300px;
+            }
+
+            .ai-orb {
+                width: 200px;
+                height: 200px;
+            }
+
+            .ai-core {
+                width: 150px;
+                height: 150px;
+            }
+
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-activity {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div class="logo-icon">AI</div>
+                    <span>LOGOS ECOSYSTEM</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#platform">Platform</a></li>
+                    <li><a href="#agents">AI Agents</a></li>
+                    <li><a href="#demo">Live Demo</a></li>
+                    <li><a href="#security">Security</a></li>
+                </ul>
+                <button class="cta-button" onclick="showNotification('Welcome to LOGOS! 🚀')">Get Started</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="particles" id="particles"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>The Future of AI is Here</h1>
+                    <p>Experience the next generation of AI-powered solutions with 100+ intelligent agents, quantum-resistant security, and adaptive interfaces.</p>
+                    <button class="cta-button" onclick="celebrate()">Start Free Trial</button>
+                </div>
+                <div class="hero-visual">
+                    <div class="ai-orb"></div>
+                    <div class="ai-core" onclick="activateAI()">AI</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo Section -->
+    <section class="live-demo" id="demo">
+        <div class="container">
+            <h2 class="section-title">Experience AI in Action</h2>
+            <p class="section-subtitle">See how our AI adapts and learns in real-time</p>
+            
+            <div class="demo-container">
+                <div class="chat-demo">
+                    <div class="chat-header">
+                        <div class="logo-icon" style="width: 30px; height: 30px; font-size: 1rem;">AI</div>
+                        <span>LOGOS AI Assistant</span>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai">
+                            <div class="message-bubble">
+                                Hello! I'm your AI assistant. How can I help you today?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Ask me anything..." onkeypress="handleChatInput(event)">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+                
+                <div class="metrics-panel">
+                    <h3 style="margin-bottom: 1.5rem;">Real-time AI Metrics</h3>
+                    
+                    <div class="metric-item">
+                        <div class="metric-header">
+                            <span>Processing Speed</span>
+                            <span id="speedValue">0ms</span>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill" id="speedBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <div class="metric-header">
+                            <span>Accuracy</span>
+                            <span id="accuracyValue">0%</span>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill" id="accuracyBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <div class="metric-header">
+                            <span>Learning Progress</span>
+                            <span id="learningValue">0%</span>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill" id="learningBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal">
+                        <div id="terminal-content">
+                            <div class="terminal-line"><span class="terminal-prompt">$</span> AI System Status: Online</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" data-target="2500000">0</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" data-target="150">0</div>
+                    <div class="stat-label">AI Agents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" data-target="500">0</div>
+                    <div class="stat-label">TB Data Processed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" data-target="99.99">0</div>
+                    <div class="stat-label">% Uptime</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">AI-Native Features</h2>
+            <p class="section-subtitle">Built from the ground up with artificial intelligence at its core, delivering unprecedented capabilities and performance.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card" onclick="showNotification('AI Intelligence: 100+ ML models ready!')">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">AI-Powered Intelligence</h3>
+                    <p class="feature-description">Advanced machine learning models that adapt to your needs in real-time, providing personalized experiences and predictive insights.</p>
+                </div>
+                
+                <div class="feature-card" onclick="showNotification('Security: Quantum-resistant encryption active!')">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">Quantum-Resistant Security</h3>
+                    <p class="feature-description">Next-generation cryptography with post-quantum algorithms, zero-knowledge proofs, and AI-powered threat detection.</p>
+                </div>
+                
+                <div class="feature-card" onclick="showNotification('Performance: 12ms average response time!')">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Lightning Performance</h3>
+                    <p class="feature-description">Intelligent caching, predictive prefetching, and ML-optimized resource allocation for blazing-fast experiences.</p>
+                </div>
+                
+                <div class="feature-card" onclick="showNotification('Languages: 50+ languages supported!')">
+                    <div class="feature-icon">🌍</div>
+                    <h3 class="feature-title">Global Intelligence</h3>
+                    <p class="feature-description">AI-powered translations in 50+ languages with cultural adaptation and context-aware localization.</p>
+                </div>
+                
+                <div class="feature-card" onclick="showNotification('Accessibility: WCAG AAA compliant!')">
+                    <div class="feature-icon">♿</div>
+                    <h3 class="feature-title">Universal Accessibility</h3>
+                    <p class="feature-description">WCAG AAA compliant with AI-assisted navigation, screen reader optimization, and adaptive interfaces.</p>
+                </div>
+                
+                <div class="feature-card" onclick="showNotification('Themes: AI adapts to your environment!')">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Adaptive Theming</h3>
+                    <p class="feature-description">Dynamic themes that adapt to environment, user preferences, and accessibility needs with AI optimization.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Activity Indicator -->
+    <div class="ai-activity" onclick="toggleAIDetails()">
+        <div class="ai-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+        <span id="ai-status">AI is processing</span>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Animate counters
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-value');
+            
+            counters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                const isDecimal = target % 1 !== 0;
+                const increment = target / 100;
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        if (isDecimal) {
+                            counter.textContent = current.toFixed(2);
+                        } else {
+                            counter.textContent = Math.floor(current).toLocaleString();
+                        }
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        if (isDecimal) {
+                            counter.textContent = target.toFixed(2);
+                        } else {
+                            counter.textContent = target.toLocaleString();
+                        }
+                    }
+                };
+                
+                // Start animation when in viewport
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            updateCounter();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.5 });
+                
+                observer.observe(counter);
+            });
+        }
+
+        // Celebrate function
+        function celebrate() {
+            // Create confetti effect
+            const colors = ['#4870FF', '#00F6FF', '#FFD700'];
+            const confettiCount = 100;
+            const body = document.body;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.transition = 'all 2s ease-out';
+                confetti.style.zIndex = '10000';
+                
+                body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.style.top = '100%';
+                    confetti.style.transform = `rotate(${Math.random() * 720}deg)`;
+                    confetti.style.opacity = '0';
+                }, 10);
+                
+                setTimeout(() => {
+                    body.removeChild(confetti);
+                }, 2000);
+            }
+
+            showNotification('🎉 Welcome to the future of AI!');
+        }
+
+        // AI Status Toggle
+        let aiProcessing = true;
+        setInterval(() => {
+            const statusElement = document.getElementById('ai-status');
+            aiProcessing = !aiProcessing;
+            statusElement.textContent = aiProcessing ? 'AI is processing' : 'AI is ready';
+        }, 3000);
+
+        // Chat functionality
+        const aiResponses = [
+            "That's a great question! Our AI platform uses advanced neural networks to provide real-time insights.",
+            "I can help you with that. Our system processes over 500TB of data daily with 99.99% uptime.",
+            "Interesting! Did you know we have 150+ specialized AI agents working together?",
+            "Our quantum-resistant security ensures your data is protected against future threats.",
+            "Let me analyze that for you... Our ML models are achieving 99.7% accuracy!",
+            "Great observation! Our platform adapts to your needs in real-time."
+        ];
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            if (input.value.trim() === '') return;
+            
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.innerHTML = `<div class="message-bubble">${input.value}</div>`;
+            messagesContainer.appendChild(userMessage);
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate AI thinking
+            updateMetrics();
+            
+            // Add AI response after delay
+            setTimeout(() => {
+                const aiMessage = document.createElement('div');
+                aiMessage.className = 'message ai';
+                const response = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+                aiMessage.innerHTML = `<div class="message-bubble">${response}</div>`;
+                messagesContainer.appendChild(aiMessage);
+                
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Add terminal log
+                addTerminalLine(`AI Response generated in ${12 + Math.random() * 8}ms`);
+            }, 1000);
+        }
+
+        function handleChatInput(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            // Speed
+            const speed = 8 + Math.random() * 12;
+            document.getElementById('speedValue').textContent = speed.toFixed(0) + 'ms';
+            document.getElementById('speedBar').style.width = (100 - speed) + '%';
+            
+            // Accuracy
+            const accuracy = 95 + Math.random() * 4.7;
+            document.getElementById('accuracyValue').textContent = accuracy.toFixed(1) + '%';
+            document.getElementById('accuracyBar').style.width = accuracy + '%';
+            
+            // Learning
+            const currentLearning = parseFloat(document.getElementById('learningBar').style.width) || 0;
+            const newLearning = Math.min(100, currentLearning + Math.random() * 5);
+            document.getElementById('learningValue').textContent = newLearning.toFixed(0) + '%';
+            document.getElementById('learningBar').style.width = newLearning + '%';
+        }
+
+        // Terminal functionality
+        function addTerminalLine(text) {
+            const terminal = document.getElementById('terminal-content');
+            const line = document.createElement('div');
+            line.className = 'terminal-line typing';
+            line.innerHTML = `<span class="terminal-prompt">$</span> ${text}`;
+            terminal.appendChild(line);
+            
+            // Keep only last 10 lines
+            while (terminal.children.length > 10) {
+                terminal.removeChild(terminal.firstChild);
+            }
+            
+            // Scroll to bottom
+            terminal.parentElement.scrollTop = terminal.parentElement.scrollHeight;
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Activate AI
+        function activateAI() {
+            showNotification('🤖 AI Core Activated!');
+            updateMetrics();
+            addTerminalLine('AI Core: Neural networks initialized');
+            addTerminalLine('AI Core: Loading 150+ agent models...');
+            addTerminalLine('AI Core: System ready for interaction');
+        }
+
+        // Toggle AI details
+        function toggleAIDetails() {
+            const messages = [
+                'Neural networks: Active',
+                'Quantum encryption: Enabled',
+                'Learning rate: Optimal',
+                'Agent status: All operational'
+            ];
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            showNotification(`🔍 ${message}`);
+        }
+
+        // Initialize
+        createParticles();
+        animateCounters();
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Initialize metrics
+        setTimeout(() => {
+            updateMetrics();
+            addTerminalLine('System initialized successfully');
+            addTerminalLine('Connected to LOGOS AI Network');
+        }, 1000);
+
+        // Periodic updates
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const events = [
+                    'New AI model deployed',
+                    'Security scan completed',
+                    'Cache optimization: 94% hit rate',
+                    'User behavior analyzed',
+                    'Predictive model updated',
+                    'Quantum threat detected and mitigated'
+                ];
+                addTerminalLine(events[Math.floor(Math.random() * events.length)]);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

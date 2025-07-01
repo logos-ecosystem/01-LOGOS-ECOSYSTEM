@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ whitelabel.platform_full_name }}{% endblock %}</title>
+    <style>
+        :root {
+            --primary-color: {{ whitelabel.colors.primary }};
+            --secondary-color: {{ whitelabel.colors.secondary }};
+            --accent-color: {{ whitelabel.colors.accent }};
+            --background-color: {{ whitelabel.colors.background }};
+            --surface-color: {{ whitelabel.colors.surface }};
+            --error-color: {{ whitelabel.colors.error }};
+            --warning-color: {{ whitelabel.colors.warning }};
+            --info-color: {{ whitelabel.colors.info }};
+            --success-color: {{ whitelabel.colors.success }};
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--surface-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+        }
+        .header img {
+            max-height: 50px;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+        .button-secondary {
+            background-color: var(--secondary-color);
+        }
+        .footer {
+            background-color: var(--background-color);
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .social-links {
+            margin: 20px 0;
+        }
+        .social-links a {
+            margin: 0 10px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .divider {
+            border-bottom: 1px solid #e0e0e0;
+            margin: 30px 0;
+        }
+        .highlight {
+            background-color: rgba(25, 118, 210, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        .warning {
+            background-color: rgba(255, 152, 0, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid var(--warning-color);
+        }
+        .success {
+            background-color: rgba(76, 175, 80, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid var(--success-color);
+        }
+        .error {
+            background-color: rgba(244, 67, 54, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid var(--error-color);
+        }
+        .info {
+            background-color: rgba(33, 150, 243, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid var(--info-color);
+        }
+        
+        /* Custom CSS from white-label config */
+        {{ whitelabel.custom_css | safe }}
+    </style>
+    {% if whitelabel.custom_head_html %}
+    {{ whitelabel.custom_head_html | safe }}
+    {% endif %}
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            {% if whitelabel.logo_url %}
+            <img src="{{ logo_url }}" alt="{{ whitelabel.platform_name }}">
+            {% endif %}
+            <h1>{{ whitelabel.platform_full_name }}</h1>
+        </div>
+        
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+        
+        <div class="footer">
+            <p>© {{ current_year }} {{ whitelabel.legal.company_name }}. All rights reserved.</p>
+            
+            {% if whitelabel.legal.privacy_policy_url or whitelabel.legal.terms_of_service_url %}
+            <p>
+                {% if whitelabel.legal.privacy_policy_url %}
+                <a href="{{ whitelabel.legal.privacy_policy_url }}">Privacy Policy</a>
+                {% endif %}
+                {% if whitelabel.legal.privacy_policy_url and whitelabel.legal.terms_of_service_url %} | {% endif %}
+                {% if whitelabel.legal.terms_of_service_url %}
+                <a href="{{ whitelabel.legal.terms_of_service_url }}">Terms of Service</a>
+                {% endif %}
+                {% if whitelabel.legal.cookie_policy_url %}
+                | <a href="{{ whitelabel.legal.cookie_policy_url }}">Cookie Policy</a>
+                {% endif %}
+            </p>
+            {% endif %}
+            
+            {% if social_links %}
+            <div class="social-links">
+                {% if social_links.twitter %}
+                <a href="{{ social_links.twitter }}">Twitter</a>
+                {% endif %}
+                {% if social_links.linkedin %}
+                <a href="{{ social_links.linkedin }}">LinkedIn</a>
+                {% endif %}
+                {% if social_links.github %}
+                <a href="{{ social_links.github }}">GitHub</a>
+                {% endif %}
+                {% if social_links.discord %}
+                <a href="{{ social_links.discord }}">Discord</a>
+                {% endif %}
+                {% if social_links.youtube %}
+                <a href="{{ social_links.youtube }}">YouTube</a>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <p style="margin-top: 20px;">
+                {% if whitelabel.support_url %}
+                <a href="{{ whitelabel.support_url }}">Support Center</a> | 
+                {% endif %}
+                <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+            </p>
+            
+            <p style="margin-top: 20px; font-size: 12px; color: #999;">
+                You received this email because you're registered with {{ whitelabel.platform_name }}.
+                {% block unsubscribe %}{% endblock %}
+            </p>
+            
+            {% if whitelabel.legal.company_address %}
+            <p style="margin-top: 10px; font-size: 11px; color: #999;">
+                {{ whitelabel.legal.company_address }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if whitelabel.custom_footer_html %}
+    {{ whitelabel.custom_footer_html | safe }}
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive AI Assistant - Transforming Business Leadership</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s ease infinite;
+            background-size: 200% 200%;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: #ffffff;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #3b82f6;
+        }
+        
+        .btn-secondary:hover {
+            background: #3b82f6;
+            transform: translateY(-3px);
+        }
+        
+        .section {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #ffffff;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .feature-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #3b82f6;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #60a5fa;
+        }
+        
+        .domains {
+            background: #0f172a;
+        }
+        
+        .domain-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .domain-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 3rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .domain-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .domain-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stats {
+            background: #1a1a2e;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-item h3 {
+            font-size: 3rem;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .testimonial {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-author {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background: #0a0a0a;
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid #1e293b;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #3b82f6;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Executive AI Assistant</h1>
+                <p class="tagline">Your Intelligent Partner for Strategic Leadership</p>
+                <div class="cta-buttons">
+                    <a href="/demo/interactive_demo.html" class="btn btn-primary">Try Live Demo</a>
+                    <a href="#features" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="features" class="section">
+        <div class="container">
+            <h2 class="section-title">Powerful Features for Modern Executives</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">>à</span>
+                    <h3 class="feature-title">AI-Powered Intelligence</h3>
+                    <p>Leverage cutting-edge AI models for instant insights, analysis, and recommendations tailored to your business needs.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon"><¯</span>
+                    <h3 class="feature-title">Multi-Domain Expertise</h3>
+                    <p>Access specialized knowledge across healthcare, legal, sports, and general business domains.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">=ã</span>
+                    <h3 class="feature-title">Voice Control</h3>
+                    <p>Natural voice interaction for hands-free operation during meetings, driving, or multitasking.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">=Ê</span>
+                    <h3 class="feature-title">Real-Time Analytics</h3>
+                    <p>Get instant data visualization and insights to make informed decisions quickly.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">=</span>
+                    <h3 class="feature-title">Enterprise Security</h3>
+                    <p>Bank-level encryption and security protocols to protect your sensitive business data.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon"><</span>
+                    <h3 class="feature-title">Multi-Language Support</h3>
+                    <p>Communicate in English, Spanish, and more languages for global business operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section domains">
+        <div class="container">
+            <h2 class="section-title">Specialized Domain Expertise</h2>
+            <div class="domain-cards">
+                <div class="domain-card">
+                    <div class="domain-icon"><å</div>
+                    <h3>Healthcare</h3>
+                    <p>Medical knowledge, health management strategies, and healthcare industry insights for health-focused executives.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon">–</div>
+                    <h3>Legal</h3>
+                    <p>Corporate law guidance, compliance management, and contract analysis for legal risk mitigation.</p>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-icon"><Æ</div>
+                    <h3>Sports</h3>
+                    <p>Athletic performance optimization, sports business management, and team strategy development.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section stats">
+        <div class="container">
+            <h2 class="section-title">Proven Impact</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>87%</h3>
+                    <p>Decision-Making Speed Improvement</p>
+                </div>
+                <div class="stat-item">
+                    <h3>3.5x</h3>
+                    <p>Productivity Increase</p>
+                </div>
+                <div class="stat-item">
+                    <h3>92%</h3>
+                    <p>User Satisfaction Rate</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Always Available Support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">What Leaders Are Saying</h2>
+            <div class="testimonial">
+                <p class="testimonial-text">"The Executive AI Assistant has transformed how I manage my daily operations. It's like having a team of experts available 24/7."</p>
+                <p class="testimonial-author">- Sarah Chen, CEO of TechCorp</p>
+            </div>
+            <div class="testimonial">
+                <p class="testimonial-text">"The healthcare domain expertise has been invaluable for our medical device company's strategic decisions."</p>
+                <p class="testimonial-author">- Dr. Michael Rodriguez, Healthcare Executive</p>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="/demo/interactive_demo.html">Demo</a>
+                <a href="/docs">Documentation</a>
+                <a href="/api/v1/health">API Status</a>
+                <a href="https://github.com/yourusername/executive-ai-assistant">GitHub</a>
+            </div>
+            <p>&copy; 2024 Executive AI Assistant. Empowering Leaders Worldwide.</p>
+        </div>
+    </footer>
+</body>
+</html>

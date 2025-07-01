@@ -1,0 +1,652 @@
+# LOGOS Ecosystem GraphQL Schema
+
+scalar DateTime
+scalar JSON
+scalar Upload
+
+# Root Types
+type Query {
+  # User queries
+  me: User
+  user(id: ID!): User
+  users(filter: UserFilter, pagination: PaginationInput): UserConnection!
+  
+  # Product queries
+  product(id: ID!): Product
+  products(filter: ProductFilter, pagination: PaginationInput): ProductConnection!
+  
+  # Subscription queries
+  subscription(id: ID!): Subscription
+  subscriptions(filter: SubscriptionFilter, pagination: PaginationInput): SubscriptionConnection!
+  mySubscriptions: [Subscription!]!
+  
+  # Invoice queries
+  invoice(id: ID!): Invoice
+  invoices(filter: InvoiceFilter, pagination: PaginationInput): InvoiceConnection!
+  
+  # Support ticket queries
+  ticket(id: ID!): SupportTicket
+  tickets(filter: TicketFilter, pagination: PaginationInput): TicketConnection!
+  ticketCategories: [String!]!
+  
+  # AI Bot queries
+  bot(id: ID!): AIBot
+  bots(filter: BotFilter, pagination: PaginationInput): BotConnection!
+  availableModels: [AIModel!]!
+  
+  # Analytics queries
+  dashboard(period: AnalyticsPeriod!): DashboardData!
+  metrics(metric: MetricType!, period: AnalyticsPeriod!, groupBy: GroupByInterval): MetricsData!
+  usage(productId: ID, period: AnalyticsPeriod!): UsageData!
+  
+  # System queries
+  systemHealth: SystemHealth!
+  apiStatus: APIStatus!
+}
+
+type Mutation {
+  # Authentication mutations
+  register(input: RegisterInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+  logout: Boolean!
+  refreshToken(refreshToken: String!): AuthPayload!
+  forgotPassword(email: String!): Boolean!
+  resetPassword(token: String!, newPassword: String!): Boolean!
+  verifyEmail(token: String!): Boolean!
+  enable2FA: TwoFactorPayload!
+  verify2FA(code: String!): Boolean!
+  disable2FA(code: String!): Boolean!
+  
+  # User mutations
+  updateProfile(input: UpdateProfileInput!): User!
+  changePassword(currentPassword: String!, newPassword: String!): Boolean!
+  uploadAvatar(file: Upload!): User!
+  deleteAccount(password: String!): Boolean!
+  
+  # Product mutations
+  createProduct(input: CreateProductInput!): Product!
+  updateProduct(id: ID!, input: UpdateProductInput!): Product!
+  deleteProduct(id: ID!): Boolean!
+  configureProduct(id: ID!, configuration: JSON!): Product!
+  
+  # Subscription mutations
+  createSubscription(input: CreateSubscriptionInput!): Subscription!
+  updateSubscription(id: ID!, input: UpdateSubscriptionInput!): Subscription!
+  cancelSubscription(id: ID!, immediately: Boolean): Subscription!
+  reactivateSubscription(id: ID!): Subscription!
+  changeSubscriptionPlan(id: ID!, newPlanId: ID!): Subscription!
+  
+  # Payment mutations
+  addPaymentMethod(input: AddPaymentMethodInput!): PaymentMethod!
+  removePaymentMethod(id: ID!): Boolean!
+  setDefaultPaymentMethod(id: ID!): PaymentMethod!
+  payInvoice(invoiceId: ID!, paymentMethodId: ID!): Invoice!
+  
+  # Support ticket mutations
+  createTicket(input: CreateTicketInput!): SupportTicket!
+  updateTicket(id: ID!, input: UpdateTicketInput!): SupportTicket!
+  addTicketComment(ticketId: ID!, comment: String!, attachments: [Upload!]): TicketComment!
+  closeTicket(id: ID!): SupportTicket!
+  reopenTicket(id: ID!): SupportTicket!
+  
+  # AI Bot mutations
+  createBot(input: CreateBotInput!): AIBot!
+  updateBot(id: ID!, input: UpdateBotInput!): AIBot!
+  deleteBot(id: ID!): Boolean!
+  trainBot(id: ID!, trainingData: TrainingDataInput!): AIBot!
+  chatWithBot(botId: ID!, message: String!, context: JSON): ChatResponse!
+  
+  # Webhook mutations
+  createWebhook(input: CreateWebhookInput!): Webhook!
+  updateWebhook(id: ID!, input: UpdateWebhookInput!): Webhook!
+  deleteWebhook(id: ID!): Boolean!
+  testWebhook(id: ID!): WebhookTestResult!
+}
+
+type Subscription {
+  # Real-time subscriptions
+  notificationReceived: Notification!
+  ticketUpdated(ticketId: ID!): SupportTicket!
+  botResponseReceived(botId: ID!): ChatResponse!
+  usageAlert: UsageAlert!
+  paymentStatusChanged: PaymentEvent!
+  systemStatusChanged: SystemStatus!
+}
+
+# User Types
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  fullName: String!
+  avatar: String
+  role: UserRole!
+  isActive: Boolean!
+  emailVerified: Boolean!
+  twoFactorEnabled: Boolean!
+  language: String!
+  timezone: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  lastLogin: DateTime
+  subscriptions: [Subscription!]!
+  invoices: [Invoice!]!
+  tickets: [SupportTicket!]!
+  bots: [AIBot!]!
+  usage: UsageData!
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+# Product Types
+type Product {
+  id: ID!
+  name: String!
+  description: String!
+  type: ProductType!
+  features: [String!]!
+  pricing: Pricing!
+  limits: ProductLimits!
+  status: ProductStatus!
+  metadata: JSON
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  subscriptions: [Subscription!]!
+  reviews: [ProductReview!]!
+  averageRating: Float
+}
+
+enum ProductType {
+  AI_BOT
+  API_ACCESS
+  STORAGE
+  COMPUTE
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  BETA
+}
+
+type Pricing {
+  monthly: Float!
+  yearly: Float!
+  usage: JSON
+  currency: String!
+}
+
+type ProductLimits {
+  apiCalls: Int
+  storage: Int
+  bandwidth: Int
+  users: Int
+  customLimits: JSON
+}
+
+# Subscription Types
+type Subscription {
+  id: ID!
+  user: User!
+  product: Product!
+  status: SubscriptionStatus!
+  billingCycle: BillingCycle!
+  currentPeriodStart: DateTime!
+  currentPeriodEnd: DateTime!
+  cancelAtPeriodEnd: Boolean!
+  cancelledAt: DateTime
+  trialStart: DateTime
+  trialEnd: DateTime
+  metadata: JSON
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  invoices: [Invoice!]!
+  usage: UsageData!
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  SUSPENDED
+  TRIALING
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+# Invoice Types
+type Invoice {
+  id: ID!
+  invoiceNumber: String!
+  user: User!
+  subscription: Subscription
+  amount: Float!
+  currency: String!
+  status: InvoiceStatus!
+  dueDate: DateTime!
+  paidAt: DateTime
+  items: [InvoiceItem!]!
+  taxAmount: Float
+  discountAmount: Float
+  metadata: JSON
+  createdAt: DateTime!
+  downloadUrl: String!
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+  REFUNDED
+}
+
+type InvoiceItem {
+  description: String!
+  quantity: Float!
+  unitPrice: Float!
+  total: Float!
+}
+
+# Support Ticket Types
+type SupportTicket {
+  id: ID!
+  ticketNumber: String!
+  user: User!
+  subject: String!
+  description: String!
+  status: TicketStatus!
+  priority: TicketPriority!
+  category: String!
+  assignedTo: User
+  comments: [TicketComment!]!
+  attachments: [String!]!
+  aiSuggestions: [AISuggestion!]
+  resolvedAt: DateTime
+  satisfactionRating: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+type TicketComment {
+  id: ID!
+  author: User!
+  comment: String!
+  attachments: [String!]!
+  isInternal: Boolean!
+  createdAt: DateTime!
+}
+
+# AI Bot Types
+type AIBot {
+  id: ID!
+  name: String!
+  description: String!
+  model: AIModel!
+  configuration: BotConfiguration!
+  status: BotStatus!
+  owner: User!
+  usage: BotUsage!
+  trainingStatus: TrainingStatus
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AIModel {
+  id: ID!
+  name: String!
+  provider: String!
+  capabilities: [String!]!
+  maxTokens: Int!
+  costPerToken: Float!
+}
+
+type BotConfiguration {
+  temperature: Float!
+  maxTokens: Int!
+  systemPrompt: String!
+  stopSequences: [String!]
+  customParameters: JSON
+}
+
+enum BotStatus {
+  ACTIVE
+  INACTIVE
+  TRAINING
+  ERROR
+}
+
+type BotUsage {
+  totalMessages: Int!
+  totalTokens: Int!
+  lastUsed: DateTime
+  averageResponseTime: Float!
+}
+
+type ChatResponse {
+  id: ID!
+  botId: ID!
+  message: String!
+  tokens: Int!
+  responseTime: Float!
+  context: JSON
+  timestamp: DateTime!
+}
+
+# Analytics Types
+type DashboardData {
+  revenue: RevenueMetrics!
+  users: UserMetrics!
+  usage: UsageMetrics!
+  support: SupportMetrics!
+  bots: BotMetrics!
+}
+
+type MetricsData {
+  metric: String!
+  period: String!
+  data: [MetricPoint!]!
+  summary: MetricSummary!
+}
+
+type MetricPoint {
+  timestamp: DateTime!
+  value: Float!
+  label: String
+}
+
+type UsageData {
+  apiCalls: Int!
+  storage: Float!
+  bandwidth: Float!
+  aiTokens: Int!
+  period: String!
+  breakdown: JSON
+}
+
+enum AnalyticsPeriod {
+  HOUR
+  DAY
+  WEEK
+  MONTH
+  QUARTER
+  YEAR
+  CUSTOM
+}
+
+enum MetricType {
+  API_CALLS
+  REVENUE
+  USERS
+  SUBSCRIPTIONS
+  TICKETS
+  BOT_USAGE
+}
+
+# System Types
+type SystemHealth {
+  status: SystemStatus!
+  services: [ServiceHealth!]!
+  uptime: Float!
+  lastCheck: DateTime!
+}
+
+type ServiceHealth {
+  name: String!
+  status: ServiceStatus!
+  responseTime: Float
+  message: String
+}
+
+enum SystemStatus {
+  HEALTHY
+  DEGRADED
+  UNHEALTHY
+}
+
+enum ServiceStatus {
+  UP
+  DOWN
+  DEGRADED
+}
+
+# Notification Types
+type Notification {
+  id: ID!
+  user: User!
+  type: NotificationType!
+  title: String!
+  message: String!
+  data: JSON
+  read: Boolean!
+  createdAt: DateTime!
+}
+
+enum NotificationType {
+  SYSTEM
+  PAYMENT
+  SECURITY
+  BOT
+  SUPPORT
+  USAGE
+}
+
+# Payment Types
+type PaymentMethod {
+  id: ID!
+  type: PaymentMethodType!
+  last4: String
+  brand: String
+  isDefault: Boolean!
+  expiryMonth: Int
+  expiryYear: Int
+  createdAt: DateTime!
+}
+
+enum PaymentMethodType {
+  CARD
+  BANK_ACCOUNT
+  PAYPAL
+}
+
+# Webhook Types
+type Webhook {
+  id: ID!
+  url: String!
+  events: [String!]!
+  isActive: Boolean!
+  secret: String!
+  lastError: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# Input Types
+input RegisterInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  language: String
+  timezone: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+  twoFactorCode: String
+}
+
+input UpdateProfileInput {
+  firstName: String
+  lastName: String
+  language: String
+  timezone: String
+  notifications: NotificationPreferencesInput
+}
+
+input CreateProductInput {
+  name: String!
+  description: String!
+  type: ProductType!
+  features: [String!]!
+  pricing: PricingInput!
+  limits: ProductLimitsInput
+}
+
+input CreateSubscriptionInput {
+  productId: ID!
+  billingCycle: BillingCycle!
+  paymentMethodId: ID!
+  startTrial: Boolean
+}
+
+input CreateTicketInput {
+  subject: String!
+  description: String!
+  category: String!
+  priority: TicketPriority!
+  attachments: [Upload!]
+}
+
+input CreateBotInput {
+  name: String!
+  description: String!
+  modelId: ID!
+  configuration: BotConfigurationInput!
+}
+
+input CreateWebhookInput {
+  url: String!
+  events: [String!]!
+  secret: String
+}
+
+# Filter Types
+input UserFilter {
+  search: String
+  role: UserRole
+  isActive: Boolean
+  emailVerified: Boolean
+}
+
+input ProductFilter {
+  search: String
+  type: ProductType
+  status: ProductStatus
+  minPrice: Float
+  maxPrice: Float
+}
+
+input SubscriptionFilter {
+  status: SubscriptionStatus
+  productId: ID
+  billingCycle: BillingCycle
+}
+
+input InvoiceFilter {
+  status: InvoiceStatus
+  dateFrom: DateTime
+  dateTo: DateTime
+  minAmount: Float
+  maxAmount: Float
+}
+
+input TicketFilter {
+  status: TicketStatus
+  priority: TicketPriority
+  category: String
+  assignedTo: ID
+}
+
+input BotFilter {
+  status: BotStatus
+  modelId: ID
+  search: String
+}
+
+# Pagination Types
+input PaginationInput {
+  page: Int
+  limit: Int
+  sortBy: String
+  sortOrder: SortOrder
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+# Connection Types (for pagination)
+type UserConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type UserEdge {
+  node: User!
+  cursor: String!
+}
+
+type ProductConnection {
+  edges: [ProductEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProductEdge {
+  node: Product!
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+# Response Types
+type AuthPayload {
+  user: User!
+  token: String!
+  refreshToken: String!
+}
+
+type TwoFactorPayload {
+  secret: String!
+  qrCode: String!
+  backupCodes: [String!]!
+}
+
+type WebhookTestResult {
+  success: Boolean!
+  statusCode: Int
+  response: String
+  error: String
+}

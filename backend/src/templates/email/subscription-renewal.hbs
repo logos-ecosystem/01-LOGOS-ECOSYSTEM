@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Renewal Reminder - {{productName}}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .renewal-info {
+            background-color: #dbeafe;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .renewal-info h2 {
+            color: #1e40af;
+            margin-top: 0;
+        }
+        .subscription-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .subscription-details table {
+            width: 100%;
+        }
+        .subscription-details td {
+            padding: 10px 0;
+        }
+        .amount-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .amount-box h3 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 10px;
+        }
+        .button.secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .features-reminder {
+            background-color: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .features-reminder ul {
+            margin-bottom: 0;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Subscription Renewal Notice</h1>
+            <p style="margin: 5px 0;">{{productName}}</p>
+        </div>
+        
+        <div class="content">
+            <div class="renewal-info">
+                <h2>Your subscription renews in {{daysUntilRenewal}} days</h2>
+                <p style="font-size: 18px; margin-bottom: 0;">
+                    Renewal Date: <strong>{{formatDate renewalDate}}</strong>
+                </p>
+            </div>
+            
+            <div class="subscription-details">
+                <h3>Subscription Details</h3>
+                <table>
+                    <tr>
+                        <td><strong>Product:</strong></td>
+                        <td>{{productName}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Billing Cycle:</strong></td>
+                        <td>Monthly</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Next Billing Date:</strong></td>
+                        <td>{{formatDate renewalDate}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Payment Method:</strong></td>
+                        <td>Card ending in ****4242</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="amount-box">
+                <p style="margin: 0 0 5px 0; opacity: 0.9;">Renewal Amount</p>
+                <h3>${{formatNumber amount}}</h3>
+                <p style="margin: 5px 0 0 0; opacity: 0.9;">per month</p>
+            </div>
+            
+            <div class="features-reminder">
+                <h4 style="margin-top: 0;">What you'll continue to enjoy:</h4>
+                <ul>
+                    <li>Access to all AI Expert Bots</li>
+                    <li>Unlimited API requests</li>
+                    <li>Priority support</li>
+                    <li>Advanced analytics and reporting</li>
+                    <li>Custom integrations</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="{{manageUrl}}" class="button">Manage Subscription</a>
+                <a href="{{manageUrl}}/billing" class="button secondary">Update Payment Method</a>
+            </div>
+            
+            <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; margin-top: 30px;">
+                <h4 style="margin-top: 0; color: #92400e;">No action needed</h4>
+                <p>Your subscription will automatically renew on {{formatDate renewalDate}}. If you need to make any changes, you can manage your subscription at any time from your account.</p>
+                <p style="margin-bottom: 0;">If you wish to cancel, please do so at least 24 hours before your renewal date to avoid being charged.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Thank you for being a valued customer!</strong></p>
+            <p>
+                Questions about your subscription?<br>
+                Contact us at <a href="mailto:support@logos-ecosystem.com">support@logos-ecosystem.com</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 12px;">
+                LOGOS Ecosystem | 123 AI Street, San Francisco, CA 94105<br>
+                <a href="https://logos-ecosystem.com">logos-ecosystem.com</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

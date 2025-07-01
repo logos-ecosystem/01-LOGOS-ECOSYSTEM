@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Stripe Webhook Handler Lambda for LOGOS Ecosystem'
+
+Resources:
+  # Lambda Function
+  StripeWebhookFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: logos-stripe-webhook
+      Runtime: python3.11
+      Handler: lambda_function.lambda_handler
+      Code:
+        ZipFile: |
+          # Placeholder - replace with actual code
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'OK'}
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          STRIPE_SECRET_KEY: ''  # Will be set from Secrets Manager
+          STRIPE_WEBHOOK_SECRET: ''  # Will be set from Secrets Manager
+
+  # Lambda Execution Role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: SecretsManagerAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: 
+                  - !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:logos-backend-secrets*'
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/logos_payments'
+
+  # API Gateway
+  StripeWebhookApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: logos-stripe-webhook-api
+      Description: API Gateway for Stripe Webhooks
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  # API Gateway Resource
+  WebhookResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref StripeWebhookApi
+      ParentId: !GetAtt StripeWebhookApi.RootResourceId
+      PathPart: stripe
+
+  # API Gateway Method
+  WebhookMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref StripeWebhookApi
+      ResourceId: !Ref WebhookResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${StripeWebhookFunction.Arn}/invocations'
+
+  # Lambda Permission for API Gateway
+  ApiGatewayPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref StripeWebhookFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StripeWebhookApi}/*/*'
+
+  # API Gateway Deployment
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: WebhookMethod
+    Properties:
+      RestApiId: !Ref StripeWebhookApi
+      StageName: prod
+
+  # DynamoDB Table for payments
+  PaymentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: logos_payments
+      AttributeDefinitions:
+        - AttributeName: payment_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: payment_id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
+Outputs:
+  WebhookUrl:
+    Description: URL for Stripe Webhook
+    Value: !Sub 'https://${StripeWebhookApi}.execute-api.${AWS::Region}.amazonaws.com/prod/stripe'
+  LambdaFunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt StripeWebhookFunction.Arn

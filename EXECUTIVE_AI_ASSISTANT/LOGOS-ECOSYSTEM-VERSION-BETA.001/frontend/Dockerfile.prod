@@ -1,0 +1,110 @@
+# Multi-stage Dockerfile for Next.js production deployment with security enhancements
+
+# Security scanning stage
+FROM aquasec/trivy:latest AS scanner
+WORKDIR /scan
+
+# Stage 1: Dependencies
+FROM node:18-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install production dependencies with audit
+RUN npm ci --only=production && npm audit fix --production
+
+# Stage 2: Dev Dependencies for build
+FROM node:18-alpine AS dev-deps
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install all dependencies including dev
+RUN npm ci
+
+# Stage 3: Builder
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# Copy dependencies from dev-deps stage
+COPY --from=dev-deps /app/node_modules ./node_modules
+COPY . .
+
+# Build arguments for environment variables
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_WS_URL
+ARG NEXT_PUBLIC_GA_ID
+ARG NEXT_PUBLIC_SENTRY_DSN
+
+# Set environment variables for build
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
+ENV NEXT_PUBLIC_GA_ID=$NEXT_PUBLIC_GA_ID
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Build the application with optimizations
+RUN npm run build
+
+# Remove dev dependencies and source maps in production
+RUN find .next -name '*.map' -delete
+
+# Stage 4: Runner
+FROM node:18-alpine AS runner
+
+# Add security labels
+LABEL maintainer="LOGOS Ecosystem Team"
+LABEL version="1.0.0"
+LABEL security.scan="trivy"
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+WORKDIR /app
+
+# Set production environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Create non-root user with specific UID/GID
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy production dependencies
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# Copy necessary files from builder
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Create necessary directories
+RUN mkdir -p .next/cache && chown -R nextjs:nodejs .next/cache
+
+# Security hardening
+RUN chmod -R 755 /app && \
+    find /app -type f -name "*.js" -exec chmod 644 {} \;
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Set hostname and port
+ENV HOSTNAME="0.0.0.0"
+ENV PORT=3000
+
+# Health check with proper error handling
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => { process.exit(1); });"
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application with proper memory limits
+CMD ["node", "--max-old-space-size=1024", "server.js"]

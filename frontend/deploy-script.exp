@@ -1,0 +1,42 @@
+#!/usr/bin/expect -f
+set timeout 120
+
+spawn vercel --yes --prod
+
+expect {
+    "Set up and deploy" {
+        send "y\r"
+        exp_continue
+    }
+    "Which scope" {
+        send "\r"
+        exp_continue
+    }
+    "Link to existing project" {
+        send "n\r"
+        exp_continue
+    }
+    "What's your project's name" {
+        send "logos-ecosystem\r"
+        exp_continue
+    }
+    "In which directory" {
+        send ".\r"
+        exp_continue
+    }
+    "Want to override" {
+        send "n\r"
+        exp_continue
+    }
+    "Deployed to production" {
+        puts "\nDeployment successful!"
+        exit 0
+    }
+    "Error" {
+        puts "\nDeployment failed!"
+        exit 1
+    }
+    eof {
+        exit 0
+    }
+}

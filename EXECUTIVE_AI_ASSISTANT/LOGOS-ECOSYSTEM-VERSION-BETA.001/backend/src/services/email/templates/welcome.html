@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to LOGOS Ecosystem!{% endblock %}
+
+{% block content %}
+<h2>Welcome aboard, {{ user_name }}! 🎉</h2>
+
+<p>We're thrilled to have you join the LOGOS Ecosystem community. You've just taken the first step into a world of AI-powered innovation and digital marketplace opportunities.</p>
+
+<div class="highlight">
+    <h3>🚀 Here's what you can do now:</h3>
+    <ul style="list-style: none; padding-left: 0;">
+        <li>✅ <strong>Explore the Marketplace</strong> - Discover AI models, prompts, and digital assets</li>
+        <li>✅ <strong>Chat with AI</strong> - Powered by Claude Opus 4 for your creative needs</li>
+        <li>✅ <strong>Set up your Wallet</strong> - Manage funds securely for purchases and sales</li>
+        <li>✅ <strong>Create Listings</strong> - Start selling your own digital products</li>
+    </ul>
+</div>
+
+<div style="text-align: center;">
+    <a href="{{ login_url }}" class="button">Get Started</a>
+</div>
+
+<div class="divider"></div>
+
+<h3>💡 Quick Tips to Get Started:</h3>
+
+<ol>
+    <li><strong>Complete Your Profile</strong> - Add a profile picture and bio to build trust</li>
+    <li><strong>Verify Your Email</strong> - Check your inbox for our verification email</li>
+    <li><strong>Claim Your Welcome Bonus</strong> - You have 100 free credits waiting!</li>
+    <li><strong>Join Our Community</strong> - Connect with other creators and buyers</li>
+</ol>
+
+<div class="warning">
+    <strong>🔒 Security Tip:</strong> Enable two-factor authentication in your account settings for enhanced security.
+</div>
+
+<p>If you have any questions or need assistance, our support team is here to help:</p>
+<p>📧 Email: <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>
+
+<p>Welcome to the future of AI-powered commerce!</p>
+
+<p>Best regards,<br>
+The LOGOS Ecosystem Team</p>
+{% endblock %}
+
+{% block unsubscribe %}
+<a href="{{ settings.FRONTEND_URL }}/preferences">Manage email preferences</a>
+{% endblock %}

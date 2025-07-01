@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="color: #333; font-size: 24px; margin-bottom: 20px;">Purchase Confirmation</h2>
+
+<p style="color: #666; font-size: 16px; line-height: 1.5; margin-bottom: 20px;">
+    Hi {{ buyer_name }},
+</p>
+
+<p style="color: #666; font-size: 16px; line-height: 1.5; margin-bottom: 30px;">
+    Thank you for your purchase on LOGOS AI Ecosystem! Your transaction has been successfully processed.
+</p>
+
+<div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 30px;">
+    <h3 style="color: #333; font-size: 18px; margin-bottom: 15px;">Order Details</h3>
+    
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">
+                <strong style="color: #333;">Transaction ID:</strong>
+            </td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #dee2e6; text-align: right;">
+                <span style="color: #666; font-family: monospace;">{{ transaction_id }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">
+                <strong style="color: #333;">Date:</strong>
+            </td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #dee2e6; text-align: right;">
+                <span style="color: #666;">{{ purchase_date }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">
+                <strong style="color: #333;">Item:</strong>
+            </td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #dee2e6; text-align: right;">
+                <span style="color: #666;">{{ item_title }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">
+                <strong style="color: #333;">Seller:</strong>
+            </td>
+            <td style="padding: 10px 0; border-bottom: 1px solid #dee2e6; text-align: right;">
+                <span style="color: #666;">{{ seller_name }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 0;">
+                <strong style="color: #333; font-size: 18px;">Total Amount:</strong>
+            </td>
+            <td style="padding: 10px 0; text-align: right;">
+                <span style="color: #28a745; font-size: 18px; font-weight: bold;">${{ amount }}</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div style="text-align: center; margin-bottom: 30px;">
+    <a href="{{ item_link }}" style="display: inline-block; padding: 14px 30px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        View Your Purchase
+    </a>
+</div>
+
+<div style="background-color: #e8f5e9; padding: 20px; border-radius: 5px; margin-bottom: 30px;">
+    <h3 style="color: #2e7d32; font-size: 18px; margin-bottom: 10px;">What's Next?</h3>
+    <ul style="color: #666; font-size: 14px; line-height: 1.8; margin: 0; padding-left: 20px;">
+        <li>Access your purchase from your dashboard</li>
+        <li>Download any associated files or resources</li>
+        <li>Leave a review to help other users</li>
+        <li>Contact the seller if you have any questions</li>
+    </ul>
+</div>
+
+<div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    <p style="color: #856404; font-size: 14px; margin: 0;">
+        <strong>Important:</strong> Please save this email for your records. If you experience any issues with your purchase, 
+        contact our support team with your transaction ID.
+    </p>
+</div>
+
+<p style="color: #666; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">
+    If you have any questions about your purchase, you can contact the seller directly through the messaging system 
+    or reach out to our support team.
+</p>
+
+<div style="text-align: center; margin-top: 30px;">
+    <p style="color: #999; font-size: 12px; margin-bottom: 5px;">
+        Thank you for using LOGOS AI Ecosystem!
+    </p>
+    <p style="color: #999; font-size: 12px;">
+        View your purchase history in your <a href="{{ dashboard_link }}" style="color: #007bff;">dashboard</a>
+    </p>
+</div>
+{% endblock %}

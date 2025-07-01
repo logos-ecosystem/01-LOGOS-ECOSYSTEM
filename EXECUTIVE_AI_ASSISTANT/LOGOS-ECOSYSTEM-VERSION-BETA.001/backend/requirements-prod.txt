@@ -1,0 +1,28 @@
+# Production-specific requirements for LOGOS AI Ecosystem
+
+# Production WSGI server
+gunicorn==21.2.0
+
+# Production monitoring and metrics
+prometheus-client==0.19.0
+sentry-sdk==1.40.0
+
+# Production caching
+redis==5.0.1
+hiredis==2.3.2
+
+# Production database optimizations
+psycopg2-binary==2.9.9
+
+# Production security
+cryptography==41.0.7
+
+# Production logging
+python-json-logger==2.0.7
+
+# Production performance
+orjson==3.9.10
+uvloop==0.19.0
+
+# Production health checks
+py-healthcheck==1.10.1

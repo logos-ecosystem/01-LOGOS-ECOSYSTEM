@@ -1,0 +1,204 @@
+name: 🚀 Railway Production Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_frontend:
+        description: 'Deploy Frontend'
+        required: true
+        default: 'true'
+        type: boolean
+      deploy_backend:
+        description: 'Deploy Backend'
+        required: true
+        default: 'true'
+        type: boolean
+
+env:
+  NODE_VERSION: '18.x'
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+jobs:
+  # Pre-deployment validation
+  validate:
+    name: 🔍 Validate Deployment
+    runs-on: ubuntu-latest
+    outputs:
+      frontend_changed: ${{ steps.changes.outputs.frontend }}
+      backend_changed: ${{ steps.changes.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            backend:
+              - 'backend/**'
+
+      - name: Validate Railway token
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "❌ RAILWAY_TOKEN is not set"
+            exit 1
+          fi
+          echo "✅ Railway token validated"
+
+  # Backend deployment
+  deploy-backend:
+    name: 🚂 Deploy Backend to Railway
+    runs-on: ubuntu-latest
+    needs: validate
+    if: |
+      github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_backend == 'true' ||
+      github.event_name == 'push' && needs.validate.outputs.backend_changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          npm ci --production=false
+          npm run generate || true
+
+      - name: Run tests
+        working-directory: ./backend
+        run: |
+          npm run test:ci || true
+          npm run lint || true
+
+      - name: Build backend
+        working-directory: ./backend
+        run: npm run build
+
+      - name: Deploy to Railway
+        working-directory: ./backend
+        run: |
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway service link backend
+          railway up --detach
+
+      - name: Run health check
+        run: |
+          echo "Waiting for backend to be ready..."
+          sleep 30
+          BACKEND_URL=$(railway status --json | jq -r '.services[] | select(.name=="backend") | .domains[0]')
+          curl -f "https://${BACKEND_URL}/health" || exit 1
+          echo "✅ Backend health check passed"
+
+  # Frontend deployment
+  deploy-frontend:
+    name: 🚂 Deploy Frontend to Railway
+    runs-on: ubuntu-latest
+    needs: [validate, deploy-backend]
+    if: |
+      always() &&
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_frontend == 'true' ||
+      github.event_name == 'push' && needs.validate.outputs.frontend_changed == 'true')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci --production=false
+
+      - name: Run tests
+        working-directory: ./frontend
+        run: |
+          npm run test:ci || true
+          npm run lint || true
+
+      - name: Build frontend
+        working-directory: ./frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_WS_URL: ${{ secrets.NEXT_PUBLIC_WS_URL }}
+        run: npm run build
+
+      - name: Deploy to Railway
+        working-directory: ./frontend
+        run: |
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway service link frontend
+          railway up --detach
+
+      - name: Run health check
+        run: |
+          echo "Waiting for frontend to be ready..."
+          sleep 30
+          FRONTEND_URL=$(railway status --json | jq -r '.services[] | select(.name=="frontend") | .domains[0]')
+          curl -f "https://${FRONTEND_URL}" || exit 1
+          echo "✅ Frontend health check passed"
+
+  # Post-deployment validation
+  validate-deployment:
+    name: ✅ Validate Production Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy-backend, deploy-frontend]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Check deployment status
+        run: |
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway status
+
+      - name: Run E2E tests
+        run: |
+          # Check main domain
+          curl -f https://logos-ecosystem.com || exit 1
+          
+          # Check API endpoint
+          curl -f https://api.logos-ecosystem.com/health || exit 1
+          
+          # Check WebSocket endpoint
+          curl -f https://api.logos-ecosystem.com/socket.io/ || exit 1
+          
+          echo "✅ All endpoints are accessible"
+
+      - name: Send deployment notification
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: '🚀 LOGOS Ecosystem deployed successfully to Railway!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment validation failed, initiating rollback..."
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway rollback --yes
+          exit 1

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGOS AI Agents - Dashboard Funcional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-bottom: 40px;
+            border-radius: 20px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #1a1a1a;
+            color: #fff;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        select {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #1a1a1a;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #333;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #888;
+        }
+        
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .agent-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .agent-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        
+        .agent-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .agent-category {
+            background: #667eea;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        
+        .agent-description {
+            color: #aaa;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .agent-capabilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .capability {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .agent-features {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .feature.active {
+            color: #4ade80;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2em;
+            color: #888;
+        }
+        
+        .error {
+            background: #dc2626;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: #1a1a1a;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #fff;
+        }
+        
+        .execute-form {
+            margin-top: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #aaa;
+        }
+        
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+        }
+        
+        .btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #0a0a0a;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        
+        .result pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #4ade80;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+        
+        .page-btn {
+            padding: 10px 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover {
+            border-color: #667eea;
+            background: #2a2a2a;
+        }
+        
+        .page-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+        }
+        
+        .demo-mode {
+            background: #f59e0b;
+            color: #000;
+            padding: 10px 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-mode">
+        MODO DEMO - Conecta con tu API real modificando la variable API_BASE_URL
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1>LOGOS AI Agents</h1>
+            <p class="subtitle">Sistema de 158 Agentes Especializados de IA</p>
+        </header>
+        
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar agentes por nombre, categoría o capacidad...">
+            </div>
+            <select id="categoryFilter">
+                <option value="">Todas las categorías</option>
+            </select>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalAgents">0</div>
+                <div class="stat-label">Total Agentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCategories">0</div>
+                <div class="stat-label">Categorías</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCapabilities">0</div>
+                <div class="stat-label">Capacidades</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeAgents">0</div>
+                <div class="stat-label">Activos Ahora</div>
+            </div>
+        </div>
+        
+        <div id="agentsContainer" class="agents-grid">
+            <div class="loading">Cargando agentes...</div>
+        </div>
+        
+        <div class="pagination" id="pagination"></div>
+    </div>
+    
+    <div id="agentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalAgentName"></h2>
+            <p id="modalAgentDescription"></p>
+            
+            <div class="execute-form">
+                <h3>Ejecutar Capacidad</h3>
+                <div class="form-group">
+                    <label>Seleccionar Capacidad:</label>
+                    <select id="capabilitySelect" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label>Parámetros (JSON):</label>
+                    <textarea id="parametersInput" placeholder='{"query": "Tu consulta aquí"}'></textarea>
+                </div>
+                <button class="btn" id="executeBtn">Ejecutar</button>
+                
+                <div id="resultContainer" class="result" style="display: none;">
+                    <h4>Resultado:</h4>
+                    <pre id="resultContent"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuración - BACKEND LOCAL LOGOS
+        const API_BASE_URL = 'http://localhost:8000/api/ai'; // Backend local
+        const AUTH_TOKEN = 'local-dev-token'; // Token para desarrollo local
+        
+        // Estado de la aplicación
+        let allAgents = [];
+        let filteredAgents = [];
+        let currentPage = 1;
+        const agentsPerPage = 12;
+        let categories = [];
+        let selectedAgent = null;
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            setupEventListeners();
+        });
+        
+        async function initializeApp() {
+            // En modo demo, usar datos simulados
+            if (API_BASE_URL.includes('localhost')) {
+                loadDemoData();
+            } else {
+                await loadRealData();
+            }
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', filterAgents);
+            document.getElementById('categoryFilter').addEventListener('change', filterAgents);
+            document.querySelector('.close-modal').addEventListener('click', closeModal);
+            document.getElementById('executeBtn').addEventListener('click', executeCapability);
+            
+            window.addEventListener('click', (e) => {
+                if (e.target.id === 'agentModal') {
+                    closeModal();
+                }
+            });
+        }
+        
+        // Cargar datos reales de la API
+        async function loadRealData() {
+            try {
+                // Cargar categorías
+                const categoriesResponse = await fetch(`${API_BASE_URL}/agents/categories`, {
+                    headers: {
+                        'Authorization': `Bearer ${AUTH_TOKEN}`
+                    }
+                });
+                
+                if (categoriesResponse.ok) {
+                    const data = await categoriesResponse.json();
+                    categories = data.categories;
+                    populateCategoryFilter();
+                }
+                
+                // Cargar agentes
+                const agentsResponse = await fetch(`${API_BASE_URL}/agents?limit=1000`, {
+                    headers: {
+                        'Authorization': `Bearer ${AUTH_TOKEN}`
+                    }
+                });
+                
+                if (agentsResponse.ok) {
+                    const data = await agentsResponse.json();
+                    allAgents = data.agents;
+                    filteredAgents = allAgents;
+                    updateStats();
+                    renderAgents();
+                } else {
+                    throw new Error('Failed to load agents');
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showError('Error al cargar los datos. Usando modo demo.');
+                loadDemoData();
+            }
+        }
+        
+        // Datos de demostración
+        function loadDemoData() {
+            // Categorías demo
+            categories = [
+                { name: 'medical', displayName: 'Medical', agentCount: 20 },
+                { name: 'engineering', displayName: 'Engineering', agentCount: 15 },
+                { name: 'finance', displayName: 'Finance', agentCount: 12 },
+                { name: 'business', displayName: 'Business', agentCount: 18 },
+                { name: 'technology', displayName: 'Technology', agentCount: 15 },
+                { name: 'legal', displayName: 'Legal', agentCount: 10 },
+                { name: 'education', displayName: 'Education', agentCount: 12 },
+                { name: 'science', displayName: 'Science', agentCount: 15 },
+                { name: 'geography', displayName: 'Geography', agentCount: 25 },
+                { name: 'arts', displayName: 'Arts', agentCount: 8 },
+                { name: 'agriculture', displayName: 'Agriculture', agentCount: 6 },
+                { name: 'transportation', displayName: 'Transportation', agentCount: 10 }
+            ];
+            
+            // Generar agentes demo
+            allAgents = generateDemoAgents();
+            filteredAgents = allAgents;
+            
+            populateCategoryFilter();
+            updateStats();
+            renderAgents();
+        }
+        
+        function generateDemoAgents() {
+            const agents = [];
+            const capabilities = ['analyze', 'consult', 'generate', 'diagnose', 'forecast', 'optimize'];
+            
+            categories.forEach(category => {
+                for (let i = 0; i < category.agentCount; i++) {
+                    agents.push({
+                        id: `${category.name}-agent-${i + 1}`,
+                        name: `${category.displayName} Expert ${i + 1}`,
+                        description: `Specialized AI agent for ${category.displayName.toLowerCase()} with advanced capabilities in analysis, consultation, and problem-solving.`,
+                        category: category.name,
+                        capabilities: capabilities.slice(0, Math.floor(Math.random() * 4) + 2).map(cap => ({
+                            name: cap,
+                            description: `${cap} functionality for ${category.displayName}`
+                        })),
+                        features: {
+                            audio: Math.random() > 0.3,
+                            marketplace: true,
+                            iot: category.name === 'engineering' || category.name === 'technology',
+                            automotive: category.name === 'transportation' || category.name === 'engineering'
+                        },
+                        metadata: {
+                            rating: (4 + Math.random()).toFixed(1),
+                            usage: Math.floor(Math.random() * 1000)
+                        }
+                    });
+                }
+            });
+            
+            return agents;
+        }
+        
+        function populateCategoryFilter() {
+            const select = document.getElementById('categoryFilter');
+            select.innerHTML = '<option value="">Todas las categorías</option>';
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.name;
+                option.textContent = `${category.displayName} (${category.agentCount})`;
+                select.appendChild(option);
+            });
+        }
+        
+        function updateStats() {
+            document.getElementById('totalAgents').textContent = allAgents.length;
+            document.getElementById('totalCategories').textContent = categories.length;
+            
+            const totalCapabilities = allAgents.reduce((sum, agent) => sum + agent.capabilities.length, 0);
+            document.getElementById('totalCapabilities').textContent = totalCapabilities;
+            
+            const activeCount = Math.floor(allAgents.length * 0.85);
+            document.getElementById('activeAgents').textContent = activeCount;
+        }
+        
+        function filterAgents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            
+            filteredAgents = allAgents.filter(agent => {
+                const matchesSearch = !searchTerm || 
+                    agent.name.toLowerCase().includes(searchTerm) ||
+                    agent.description.toLowerCase().includes(searchTerm) ||
+                    agent.capabilities.some(cap => cap.name.toLowerCase().includes(searchTerm));
+                
+                const matchesCategory = !selectedCategory || agent.category === selectedCategory;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            currentPage = 1;
+            renderAgents();
+        }
+        
+        function renderAgents() {
+            const container = document.getElementById('agentsContainer');
+            const startIndex = (currentPage - 1) * agentsPerPage;
+            const endIndex = startIndex + agentsPerPage;
+            const agentsToShow = filteredAgents.slice(startIndex, endIndex);
+            
+            if (agentsToShow.length === 0) {
+                container.innerHTML = '<div class="loading">No se encontraron agentes</div>';
+                return;
+            }
+            
+            container.innerHTML = agentsToShow.map(agent => `
+                <div class="agent-card" onclick="showAgentDetails('${agent.id}')">
+                    <div class="agent-header">
+                        <h3 class="agent-name">${agent.name}</h3>
+                        <span class="agent-category">${getCategoryName(agent.category)}</span>
+                    </div>
+                    <p class="agent-description">${agent.description}</p>
+                    <div class="agent-capabilities">
+                        ${agent.capabilities.map(cap => `
+                            <span class="capability">${cap.name}</span>
+                        `).join('')}
+                    </div>
+                    <div class="agent-features">
+                        <span class="feature ${agent.features.audio ? 'active' : ''}">
+                            🎤 Audio
+                        </span>
+                        <span class="feature ${agent.features.iot ? 'active' : ''}">
+                            📡 IoT
+                        </span>
+                        <span class="feature ${agent.features.automotive ? 'active' : ''}">
+                            🚗 Auto
+                        </span>
+                        <span class="feature active">
+                            ⭐ ${agent.metadata.rating}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+            
+            renderPagination();
+        }
+        
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredAgents.length / agentsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // Previous button
+            if (currentPage > 1) {
+                html += `<button class="page-btn" onclick="changePage(${currentPage - 1})">Anterior</button>`;
+            }
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    html += `<span>...</span>`;
+                }
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                html += `<button class="page-btn" onclick="changePage(${currentPage + 1})">Siguiente</button>`;
+            }
+            
+            pagination.innerHTML = html;
+        }
+        
+        function changePage(page) {
+            currentPage = page;
+            renderAgents();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function getCategoryName(categoryId) {
+            const category = categories.find(c => c.name === categoryId);
+            return category ? category.displayName : categoryId;
+        }
+        
+        function showAgentDetails(agentId) {
+            selectedAgent = allAgents.find(a => a.id === agentId);
+            if (!selectedAgent) return;
+            
+            document.getElementById('modalAgentName').textContent = selectedAgent.name;
+            document.getElementById('modalAgentDescription').textContent = selectedAgent.description;
+            
+            // Populate capabilities dropdown
+            const select = document.getElementById('capabilitySelect');
+            select.innerHTML = selectedAgent.capabilities.map(cap => `
+                <option value="${cap.name}">${cap.name} - ${cap.description}</option>
+            `).join('');
+            
+            // Reset form
+            document.getElementById('parametersInput').value = '{\n  "query": ""\n}';
+            document.getElementById('resultContainer').style.display = 'none';
+            
+            document.getElementById('agentModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('agentModal').style.display = 'none';
+            selectedAgent = null;
+        }
+        
+        async function executeCapability() {
+            if (!selectedAgent) return;
+            
+            const capability = document.getElementById('capabilitySelect').value;
+            const parametersText = document.getElementById('parametersInput').value;
+            const executeBtn = document.getElementById('executeBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultContent = document.getElementById('resultContent');
+            
+            try {
+                // Parse parameters
+                const parameters = JSON.parse(parametersText);
+                
+                // Disable button during execution
+                executeBtn.disabled = true;
+                executeBtn.textContent = 'Ejecutando...';
+                
+                if (API_BASE_URL.includes('localhost')) {
+                    // Demo mode - simulate execution
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    const demoResult = {
+                        success: true,
+                        agentId: selectedAgent.id,
+                        agentName: selectedAgent.name,
+                        capability: capability,
+                        result: {
+                            message: `Capability '${capability}' executed successfully`,
+                            analysis: `This is a demo response from ${selectedAgent.name}. In a real implementation, this would contain the actual AI-generated response based on your parameters.`,
+                            parameters_received: parameters,
+                            timestamp: new Date().toISOString()
+                        }
+                    };
+                    
+                    resultContent.textContent = JSON.stringify(demoResult, null, 2);
+                    resultContainer.style.display = 'block';
+                } else {
+                    // Real API call
+                    const response = await fetch(`${API_BASE_URL}/agents/${selectedAgent.id}/execute`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${AUTH_TOKEN}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            capability: capability,
+                            parameters: parameters
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    resultContent.textContent = JSON.stringify(result, null, 2);
+                    resultContainer.style.display = 'block';
+                }
+            } catch (error) {
+                resultContent.textContent = `Error: ${error.message}`;
+                resultContainer.style.display = 'block';
+            } finally {
+                executeBtn.disabled = false;
+                executeBtn.textContent = 'Ejecutar';
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            document.querySelector('.container').insertBefore(errorDiv, document.querySelector('.controls'));
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+        
+        // Animación de números
+        function animateNumber(element, target) {
+            const current = parseInt(element.textContent) || 0;
+            const increment = Math.ceil((target - current) / 20);
+            const timer = setInterval(() => {
+                const now = parseInt(element.textContent);
+                if (now < target) {
+                    element.textContent = Math.min(now + increment, target);
+                } else {
+                    clearInterval(timer);
+                }
+            }, 50);
+        }
+    </script>
+</body>
+</html>

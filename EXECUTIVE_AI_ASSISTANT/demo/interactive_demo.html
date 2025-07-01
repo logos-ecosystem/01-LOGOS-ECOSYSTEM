@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive AI Assistant - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            margin-bottom: 3rem;
+            border-radius: 1rem;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+        
+        .chat-container {
+            background: #1a1a1a;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #0f0f0f;
+            border-radius: 0.5rem;
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user {
+            background: #1e3a8a;
+            margin-left: 20%;
+            text-align: right;
+        }
+        
+        .message.assistant {
+            background: #1e293b;
+            margin-right: 20%;
+        }
+        
+        .message-time {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .domain-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .domain-card {
+            flex: 1;
+            min-width: 250px;
+            padding: 1.5rem;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .domain-card:hover {
+            border-color: #60a5fa;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(96, 165, 250, 0.2);
+        }
+        
+        .domain-card.active {
+            border-color: #3b82f6;
+            background: #1e3a8a;
+        }
+        
+        .domain-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: #60a5fa;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(96, 165, 250, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #60a5fa;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 0.3rem;
+            padding: 1rem;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #60a5fa;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .error-message {
+            background: #dc2626;
+            color: #ffffff;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .message.user {
+                margin-left: 10%;
+            }
+            
+            .message.assistant {
+                margin-right: 10%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Executive AI Assistant</h1>
+            <p class="subtitle">Your Intelligent Business Partner</p>
+        </header>
+        
+        <div class="domain-selector">
+            <div class="domain-card active" data-domain="general">
+                <div class="domain-icon">></div>
+                <h3>General Assistant</h3>
+                <p>All-purpose AI support</p>
+            </div>
+            <div class="domain-card" data-domain="healthcare">
+                <div class="domain-icon"><å</div>
+                <h3>Healthcare</h3>
+                <p>Medical & health insights</p>
+            </div>
+            <div class="domain-card" data-domain="legal">
+                <div class="domain-icon">–</div>
+                <h3>Legal</h3>
+                <p>Corporate law & compliance</p>
+            </div>
+            <div class="domain-card" data-domain="sports">
+                <div class="domain-icon"><Æ</div>
+                <h3>Sports</h3>
+                <p>Athletic performance</p>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>AI Chat Assistant</h2>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>Online</span>
+                </div>
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message assistant">
+                    <p>Hello! I'm your Executive AI Assistant. How can I help you today?</p>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Type your message here..."
+                    autocomplete="off"
+                >
+                <button class="btn" id="sendButton">Send</button>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon"><¯</div>
+                <h3 class="feature-title">Strategic Insights</h3>
+                <p>Get data-driven recommendations for business decisions</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">=Ê</div>
+                <h3 class="feature-title">Analytics</h3>
+                <p>Real-time performance metrics and trend analysis</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">=</div>
+                <h3 class="feature-title">Secure & Private</h3>
+                <p>Enterprise-grade security for your sensitive data</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const API_BASE = 'http://localhost:8000/api/v1';
+        let conversationId = null;
+        let currentDomain = 'general';
+        
+        // DOM Elements
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const domainCards = document.querySelectorAll('.domain-card');
+        
+        // Domain selection
+        domainCards.forEach(card => {
+            card.addEventListener('click', () => {
+                domainCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                currentDomain = card.dataset.domain;
+                addMessage('assistant', `Switched to ${currentDomain} domain. How can I help you?`);
+            });
+        });
+        
+        // Send message
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addMessage('user', message);
+            chatInput.value = '';
+            
+            // Show loading
+            loadingIndicator.classList.add('active');
+            errorMessage.classList.remove('show');
+            
+            try {
+                const response = await fetch(`${API_BASE}/chat/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        conversation_id: conversationId,
+                        domain: currentDomain !== 'general' ? currentDomain : null,
+                        language: 'en'
+                    }),
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to get response');
+                }
+                
+                const data = await response.json();
+                conversationId = data.conversation_id;
+                
+                // Add assistant message
+                addMessage('assistant', data.response);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to connect to the AI assistant. Please make sure the server is running.');
+            } finally {
+                loadingIndicator.classList.remove('active');
+            }
+        }
+        
+        // Add message to chat
+        function addMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            const contentP = document.createElement('p');
+            contentP.textContent = content;
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = new Date().toLocaleTimeString();
+            
+            messageDiv.appendChild(contentP);
+            messageDiv.appendChild(timeDiv);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Check API connection on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch(`${API_BASE}/health/`);
+                if (!response.ok) {
+                    showError('API server is not responding. Please start the server.');
+                }
+            } catch (error) {
+                showError('Cannot connect to API server. Please ensure the server is running on port 8000.');
+            }
+        });
+    </script>
+</body>
+</html>

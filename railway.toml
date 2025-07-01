@@ -1,0 +1,51 @@
+# Railway.app Configuration
+# Distinguished Engineer Level Setup
+
+[build]
+builder = "nixpacks"
+buildCommand = "echo 'Using service-specific build commands'"
+
+[deploy]
+numReplicas = 1
+restartPolicyType = "always"
+restartPolicyMaxRetries = 3
+
+# Backend Service Configuration
+[[services]]
+name = "backend"
+root = "backend"
+
+  [services.build]
+  builder = "nixpacks"
+  buildCommand = "npm ci && npm run build && npx prisma generate && npx prisma migrate deploy"
+  
+  [services.deploy]
+  startCommand = "node dist/server.js"
+  healthcheckPath = "/health"
+  healthcheckTimeout = 30
+  numReplicas = 2
+  region = "us-west1"
+  
+  [[services.deploy.env]]
+  NODE_ENV = "production"
+  PORT = "8000"
+
+# Frontend Service Configuration  
+[[services]]
+name = "frontend"
+root = "frontend"
+
+  [services.build]
+  builder = "nixpacks"
+  buildCommand = "npm ci && npm run build"
+  
+  [services.deploy]
+  startCommand = "npm start"
+  healthcheckPath = "/"
+  healthcheckTimeout = 30
+  numReplicas = 2
+  region = "us-west1"
+  
+  [[services.deploy.env]]
+  NODE_ENV = "production"
+  PORT = "3000"

@@ -1,0 +1,9 @@
+.git
+.next
+node_modules
+*.log
+.env.local
+.env.development
+README.md
+.vscode
+.idea
